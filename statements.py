@@ -14,7 +14,8 @@ t1 = "create table if not exists testdb_mg.testschema_mg.Product (Id integer, Na
 
 # API queries
 q1 = "SELECT * FROM testdb_mg.testschema_mg.product"
-q3 = "SELECT Name FROM testdb_mg.testschema_mg.product where id = %s"
+q3 = "SELECT Name, Price FROM testdb_mg.testschema_mg.product where id = %s"
+q2 = "SELECT * from  testdb_mg.testschema_mg.product where Name = %s limit 5;"
 # get last record
 q4 = "SELECT * FROM testdb_mg.testschema_mg.product Order BY ID DESC LIMIT 1"
 
@@ -23,7 +24,7 @@ q4 = "SELECT * FROM testdb_mg.testschema_mg.product Order BY ID DESC LIMIT 1"
 i1 = "INSERT INTO testdb_mg.testschema_mg.product (Id, Name, Price) VALUES (%s,%s,%s)"
 
 # update data
-u1 = "UPDATE testdb_mg.testschema_mg.product SET Name =%s,Price=%s WHERE id=%s"
+u1 = "UPDATE testdb_mg.testschema_mg.product SET Name =%s, Price=%s WHERE id=%s"
 
 # delete data from table
 d1 = "DELETE FROM testdb_mg.testschema_mg.product WHERE id=%s"
