@@ -47,8 +47,9 @@ To run this project, you need:
    bash `pip install fastapi[all] uvicorn snowflake-connector-python
 
 ### Usage
-1. Install the dependencies:
-    uvicorn main:app --reload
+1. Launch  Uvicorn server :
+bash `uvicorn main:app --host=0.0.0.0 --port=8000`
+
 2. Open your browser and go to http://localhost:8000/docs
 
 ### Notes
