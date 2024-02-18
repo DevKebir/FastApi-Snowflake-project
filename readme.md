@@ -23,12 +23,12 @@ To run this project, you need:
 1. Clone this repository:
 
    ```bash
-   git clone <https://github.com/abkebir/FastApi-Snowflake-project.git>````
+   git clone <https://github.com/abkebir/FastApi-Snowflake-project.git>
    
 2. Navigate to the project directory:
 
    ````bash
-   cd FastApi-Snowflake-project````
+   cd FastApi-Snowflake-project
 
 3. Create a virtual environment (optional but recommended):
 
