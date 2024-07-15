@@ -1,5 +1,5 @@
 name: snow_fastapi_deploy
-run-name: ${{github.actor}} is learning Githbub Actions
+run-name: ${{github.actor}} is in kitchen:)
 
 on:
     push:
