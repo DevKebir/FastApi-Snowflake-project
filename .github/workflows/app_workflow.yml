@@ -13,8 +13,12 @@ on:
             - tests/**
 
 env:
-    APP_NAME: "app_deploy"
-    APP_PORT: "8080"
+    user: ${{secrets.user}}
+    password: ${{secrets.password}}
+    account: ${{secrets.account}}
+    APP_PORT: ${{secrets.APP_PORT}}
+    APP_HOST: ${{secrets.APP_HOST}}
+
     
 jobs:
     build:
@@ -35,5 +39,3 @@ jobs:
             - name: lint with ruff
               run: |
                 pip install ruff
-                
-            
