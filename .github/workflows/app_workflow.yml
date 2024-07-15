@@ -39,5 +39,3 @@ jobs:
             - name: lint with ruff
               run: |
                 pip install ruff
-
-            
