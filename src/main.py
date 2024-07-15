@@ -1,14 +1,12 @@
 import logging
 import os
 from typing import List
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from src.database import ProductTemp, create_connex
 from src.database import ProductTemp, create_connex
 from src.statements import d1, i1, q1, q2, q3, q4, u1
 
@@ -27,6 +25,7 @@ port = int(os.getenv("port"))
 app = FastAPI(
     title="CUSTOMED SNOWFLAKE API",
     description="This is a product API for managing Snowflake tables.",
+    version="0.0.1",
 )
 
 
@@ -150,4 +149,4 @@ def delete_product(Id: int):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=host, port=port,log_level="info")
+    uvicorn.run("main:app", host=host, port=port, log_level="info")
