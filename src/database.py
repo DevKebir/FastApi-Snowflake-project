@@ -1,7 +1,7 @@
 import snowflake.connector
-from credentials import get_connect_info
+from src.credentials import get_connect_info
 from pydantic import BaseModel
-from statements import st1, st2, st3, st4, t1, u1, u2, u3
+from src.statements import st1, st2, st3, st4, t1, u1, u2, u3
 import logging
 logging.basicConfig(level=logging.INFO,filename='../log.txt',filemode= 'w',format='%(name)s - %(levelname)s - %(message)s')
 

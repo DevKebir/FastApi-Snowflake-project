@@ -1,20 +1,30 @@
 import logging
-import uuid
-from typing import List
-from dotenv import load_dotenv
 import os
+from typing import List
+
+from dotenv import load_dotenv
 load_dotenv()
 
 import uvicorn
-from database import ProductTemp, create_connex
+from src.database import ProductTemp, create_connex
 from fastapi import FastAPI, HTTPException
-from statements import d1, i1, q1, q2, q3, q4, u1
+from src.statements import d1, i1, q1, q2, q3, q4, u1
 
-logging.basicConfig(level=logging.INFO, filemode= 'a', filename='../log.txt')  # Configure the log to write information
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    filename="../log.txt",
+    filemode="a",
+)
+
+# Fetch the host and port from environment variables with default values
+host = os.getenv("host", "127.0.0.1")
+port = int(os.getenv("port", 8000))
 
 app = FastAPI(
-    title = "CUSTOMED SNOWFLAKE API",
-    description = "This is a product API for managing snowflake tables."
+    title="CUSTOMED SNOWFLAKE API",
+    description="This is a product API for managing snowflake tables.",
 )
 
 
@@ -22,7 +32,7 @@ app = FastAPI(
 def get_all_data():
     """Fetch all data from product table"""
 
-    _,cur = create_connex()
+    _, cur = create_connex()
     try:
         result = cur.execute(q1)
         datas = result.fetchmany(size=5)
@@ -34,7 +44,6 @@ def get_all_data():
     return {f"data": [data for data in datas], "total": total_count}
 
 
-
 @app.get("/get-data/id/{id}")
 def get_one_data(id: int):
     """Get one specific data by id from the product table"""
@@ -44,13 +53,16 @@ def get_one_data(id: int):
         cur.execute(q3, (id,))
         conn.commit()
         data = cur.fetchone()
-        if  data is not None:
-            return {"ID": id, "Name": data[0],"Price":float(data[1])}
+        if data is not None:
+            return {"ID": id, "Name": data[0], "Price": float(data[1])}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error while getting data: {str(e)}")
+        raise HTTPException(
+            status_code=400, detail=f"Error while getting data: {str(e)}"
+        )
     finally:
         cur.close()
         conn.close()
+
 
 @app.get("/get-data/name/{name}")
 def get_by_name(name: str):
@@ -63,13 +75,12 @@ def get_by_name(name: str):
         data = cur.fetchall()
         print(data)
         if data:
-            return [{"ID": d[0] , "Name":d[1], "Price": d[2]}for d in data ]
+            return [{"ID": d[0], "Name": d[1], "Price": d[2]} for d in data]
         else:
             raise f"No product with this name: {name}"
     finally:
         cur.close()
         conn.close()
-
 
 
 @app.post("/add-product", response_model=List[ProductTemp])
@@ -87,27 +98,29 @@ def create_product(product: ProductTemp, Id: int):
             product_dict = {
                 "Id": last_product[0],
                 "Name": last_product[1],
-                "Price": last_product[2]
+                "Price": last_product[2],
             }
             return [product_dict]
         else:
             raise ValueError("Insertion failed or no data found after insertion.")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error while adding data : {str(e)}")
+        raise HTTPException(
+            status_code=400, detail=f"Error while adding data : {str(e)}"
+        )
     finally:
         cur.close()
         con.close()
-    
-    
+
+
 @app.put("/update-product/{Id}")
 def update_product(product: ProductTemp, Id: int):
     """Update a specific product by its ID number"""
     conn, cur = create_connex()
     try:
         print(u1, product.Name, product.Id)
-        cur.execute(u1, (product.Name,product.Price,product.Id))
+        cur.execute(u1, (product.Name, product.Price, product.Id))
         conn.commit()
-    # Pull data  from DB to check if it was updated correctly
+        # Pull data  from DB to check if it was updated correctly
         cur.execute(q3, (Id,))
         d = cur.fetchall()
         if d:
@@ -115,16 +128,16 @@ def update_product(product: ProductTemp, Id: int):
     finally:
         cur.close()
         conn.close()
-        
+
 
 @app.delete("/delete-product/{Id}")
-def delete_product(Id : int):
+def delete_product(Id: int):
     """Delete a specific product by its ID number"""
     conn, cur = create_connex()
     try:
         cur.execute(d1, (Id,))
         conn.commit()
-    # Get all products for testing purposes
+        # Get all products for testing purposes
         cur.execute(q1)
         conn.commit()
         nb_products = cur.fetchall()
@@ -135,5 +148,4 @@ def delete_product(Id : int):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=os.getenv("host"), port=os.getenv("port"),log_level=logging.INFO, filemode= 'a', filename='../log.txt')
-        
+    uvicorn.run("main:app", host=host, port=port,log_level="info")
