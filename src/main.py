@@ -1,18 +1,27 @@
+import logging
+import uuid
 from typing import List
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-
+import uvicorn
 from database import ProductTemp, create_connex
 from fastapi import FastAPI, HTTPException
 from statements import d1, i1, q1, q2, q3, q4, u1
+
+logging.basicConfig(level=logging.INFO, filemode= 'a', filename='../log.txt')  # Configure the log to write information
 
 app = FastAPI(
     title = "CUSTOMED SNOWFLAKE API",
     description = "This is a product API for managing snowflake tables."
 )
 
+
 @app.get("/get-data")
 def get_all_data():
     """Fetch all data from product table"""
+
     _,cur = create_connex()
     try:
         result = cur.execute(q1)
@@ -29,6 +38,7 @@ def get_all_data():
 @app.get("/get-data/id/{id}")
 def get_one_data(id: int):
     """Get one specific data by id from the product table"""
+
     conn, cur = create_connex()
     try:
         cur.execute(q3, (id,))
@@ -45,6 +55,7 @@ def get_one_data(id: int):
 @app.get("/get-data/name/{name}")
 def get_by_name(name: str):
     """Get data by name from the product table"""
+
     conn, cur = create_connex()
     try:
         cur.execute(q2, (name,))
@@ -61,20 +72,16 @@ def get_by_name(name: str):
 
 
 
-
-
 @app.post("/add-product", response_model=List[ProductTemp])
 def create_product(product: ProductTemp, Id: int):
     """Add a new product to the products table"""
     con, cur = create_connex()
     try:
-        #print(i1)
         cur.execute(i1, (product.Id, product.Name, product.Price))
         con.commit()
         # Get the last insertion after  commitment
         cur.execute(q4)
         data = cur.fetchall()
-        #print(data)
         if data:
             last_product = data[0]
             product_dict = {
@@ -116,7 +123,6 @@ def delete_product(Id : int):
     conn, cur = create_connex()
     try:
         cur.execute(d1, (Id,))
-    # print(d1, Id)
         conn.commit()
     # Get all products for testing purposes
         cur.execute(q1)
@@ -126,23 +132,8 @@ def delete_product(Id : int):
     finally:
         cur.close()
         conn.close()
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host=os.getenv("host"), port=os.getenv("port"),log_level=logging.INFO, filemode= 'a', filename='../log.txt')
         
-    
-
-    
-
-
-
-
-
-
-
-    
-
-
-
-
-
-    
-
-

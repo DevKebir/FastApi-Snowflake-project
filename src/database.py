@@ -2,6 +2,8 @@ import snowflake.connector
 from credentials import get_connect_info
 from pydantic import BaseModel
 from statements import st1, st2, st3, st4, t1, u1, u2, u3
+import logging
+logging.basicConfig(level=logging.INFO,filename='../log.txt',filemode= 'w',format='%(name)s - %(levelname)s - %(message)s')
 
 
 class ProductTemp(BaseModel):
@@ -13,13 +15,19 @@ class ProductTemp(BaseModel):
 def create_connex():
     """Create a connection to Snowflake"""
     connect_info = get_connect_info()
-    con = snowflake.connector.connect(
+    try:
+        con = snowflake.connector.connect(
+    
         user = connect_info['user'],
         password = connect_info['password'],
         account = connect_info['account']
     )
-    cur = con.cursor()
-    return con, cur
+        if con:
+            cur = con.cursor()
+        return con, cur
+    except  Exception as e:
+        logging.error(f'failed to create creation to DWH:{e}')
+    
     
 
 
@@ -33,7 +41,7 @@ def create_schema():
         cur.execute(st4)
         print("schema created successfully")
     except  Exception as err:
-        print("Error creating schema: {}".format(err))
+        logging.error("Error creating schema: {0}".format(err))
     
 
 def use_schema():
@@ -45,7 +53,7 @@ def use_schema():
         cur.execute(u3)
         print('Switched to data_pipeline')
     except Exception as e:
-        print("Couldn't switch to the schema: {}: ".format(e.msg))
+        logging.error("Failed to switch to data_pipeline schema {}".format(e))
     
 def create_table():
     _,conn_tab = create_connex()
@@ -54,7 +62,8 @@ def create_table():
         conn_tab.execute(t1)
         print("Table created successfully")
     except  Exception as e:
-        print("Error creating table as : {}" .format(e.msg))
+        logging.error(f"Could not create table :{e}")
+        
 
 
 
