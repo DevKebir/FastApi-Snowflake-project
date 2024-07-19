@@ -28,5 +28,3 @@ u1 = "UPDATE testdb_mg.testschema_mg.product SET Name =%s, Price=%s WHERE id=%s"
 
 # delete data from table
 d1 = "DELETE FROM testdb_mg.testschema_mg.product WHERE id=%s"
-
-
