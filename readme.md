@@ -37,7 +37,7 @@ To run this project, you need:
 4. Activate your virtual environment (if you created one):
 
    Windows:
-   `cmd env\Scripts\activate`
+   `source env\Scripts\activate`
 
    Unix or MacOS:
    `source env/bin/activate`
@@ -48,7 +48,7 @@ To run this project, you need:
 
 ### Usage
 1. Launch  Uvicorn server :
-bash `uvicorn main:app --host=127.0.0.1 --port=8000`
+   `uvicorn main:app --host=127.0.0.1 --port=8000`
 
 2. Open your browser and go to http://localhost:8000/docs
 
