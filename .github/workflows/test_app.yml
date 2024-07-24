@@ -9,7 +9,8 @@ on:
       - tests/**
       - Dockerfile
       - requirements.txt
-      #- .github/workflows/
+
+      - .github/workflows/
 
 jobs:
   build:
